@@ -83,7 +83,7 @@ const Login = () => {
           </button>
 
           <button onClick={() => router.push("/signup")} className={Style.btn}>
-            Already Have Account?
+            Don't Have Account?
           </button>
         </div>
       </div>
