@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { useState } from 'react'
 import Style from "./index.module.css";
+import { login } from '@/controllers/auth';
 
 
 const Login = () => {
@@ -28,13 +29,14 @@ const Login = () => {
       const handleSubmit = () => {
 
         console.log(details)
-        // signup(details).then((res) => {
-        //   if (res?.error) {
-        //     console.log(res?.error);
-        //   } else {
-        //     console.log(res?.message);
-        //   }
-        // });
+        login(details).then((res) => {
+          if (res?.error) {
+            console.log(res)
+            // console.log(res?.message);
+          } else {
+            console.log(res?.message);
+          }
+        });
       };
 
   return (

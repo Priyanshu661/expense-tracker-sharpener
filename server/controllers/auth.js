@@ -16,7 +16,7 @@ const signup=async(req,res)=>{
         })
 
         if(user){
-            return res.status(400).json({error:"User already exists"})
+            return res.status(400).json({ message: "User already exists" });
         }
 
 
@@ -35,11 +35,42 @@ const signup=async(req,res)=>{
     }
     catch(e){
         console.log(e)
-        return res.status(400).json({error:"server error"})
+        return res.status(400).json({ message: "server error" });
+    }
+}
+
+
+const login=async(req,res)=>{
+    try{
+
+        const {email,password}=req.body;
+
+        const user=await User.findOne({
+            where:{
+                email:email
+            }
+        })
+
+        if(!user){
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if(user.password !==password){
+            return res.status(401).json({ message: "(User not authorized" });
+        }
+
+
+        return res.status(200).json({message:"Login Successfull"})
+
+    }
+    catch(e){
+        console.log(e)
+        return res.status(400).json({ message: "Server Error" });
     }
 }
 
 
 module.exports={
-    signup
+    signup,
+    login
 }

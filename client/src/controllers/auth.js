@@ -1,15 +1,41 @@
+import axios from "axios";
+
+
 export const signup = async (data) => {
   try {
-    const response = await fetch(`${process.env.SERVER_URL}/auth/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await axios.post(
+      `${process.env.SERVER_URL}/auth/signup`,
+      JSON.stringify(data),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    // const result = await response.json();
 
-    const result = await response.json();
+      return response.data;
+  } catch (e) {
+     return e.response.data;
+  }
+};
 
-    return result;
-  } catch (e) {}
+export const login = async (data) => {
+  try {
+    const response = await axios.post(
+      `${process.env.SERVER_URL}/auth/login`,
+      JSON.stringify(data),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    // const result = await response.json();
+
+    return response.data;
+  } catch (e) {
+
+    return e.response.data
+  }
 };
