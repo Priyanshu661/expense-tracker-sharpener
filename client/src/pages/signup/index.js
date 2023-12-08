@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import Style from "./index.module.css"
 import { signup } from '@/controllers/auth';
+import { useRouter } from 'next/router';
 
 const Signup = () => {
 
@@ -11,6 +12,8 @@ const Signup = () => {
       password: "",
       phone: "",
     });
+
+    const router=useRouter()
   
 
 const handleChange=(e)=>{
@@ -39,7 +42,7 @@ const handleSubmit=()=>{
 
 
   return (
-    <div >
+    <div>
       <div
         style={{
           display: "flex",
@@ -97,8 +100,14 @@ const handleSubmit=()=>{
             placeholder="enter your password"
           ></input>
         </label>
-
-        <button onClick={handleSubmit} className={Style.btn}>Sign Up</button>
+        <div style={{ display: "flex", gap: "20px" }}>
+          <button onClick={handleSubmit} className={Style.btn}>
+            Sign Up
+          </button>
+          <button onClick={() => router.push("/login")} className={Style.btn}>
+            Already Have Account?
+          </button>
+        </div>
       </div>
     </div>
   );

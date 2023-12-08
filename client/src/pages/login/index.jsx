@@ -34,10 +34,17 @@ const Login = () => {
             console.log(res)
             // console.log(res?.message);
           } else {
-            console.log(res?.message);
+
+            if(res.token){
+              localStorage.setItem("token",res.token)
+              router.replace("/")
+            }
+            console.log(res);
           }
         });
       };
+
+      
 
   return (
     <div>

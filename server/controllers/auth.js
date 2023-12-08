@@ -2,6 +2,8 @@ const User = require("../models/User");
 
 const bcrypt=require("bcrypt")
 
+const jwt=require("jsonwebtoken")
+
 
 const signup=async(req,res)=>{
     try{
@@ -65,13 +67,30 @@ const login=async(req,res)=>{
           return res.status(401).json({ message: "User not authorized" });
         }
 
+        const token = await jwt.sign({ userId: user.id }, "thisismysecretkey");
 
-        return res.status(200).json({message:"Login Successfull"})
+
+        return res.status(200).json({message:"Login Successfull",token})
 
     }
     catch(e){
         console.log(e)
         return res.status(400).json({ message: "Server Error" });
+    }
+}
+
+
+const addExpense=async(req,res)=>{
+    try{
+
+        const {amount,description,category}=req.body;
+
+
+
+    }
+    catch(e){
+         console.log(e);
+         return res.status(400).json({ message: "Server Error" });
     }
 }
 

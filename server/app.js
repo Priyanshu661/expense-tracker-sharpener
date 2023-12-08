@@ -3,7 +3,6 @@ const bodyParser=require("body-parser")
 const cors=require("cors");
 const sequilize = require("./database/db");
 
-
 const app=express();
 
 app.use(cors())
@@ -11,9 +10,13 @@ app.use(express.json())
 app.use(bodyParser.urlencoded({extended:true}));
 
 const authRoutes=require("./routes/auth");
+const expenseRoutes = require("./routes/expense");
+
 
 
 app.use("/auth",authRoutes)
+app.use("/expense", expenseRoutes);
+
 
 
 
