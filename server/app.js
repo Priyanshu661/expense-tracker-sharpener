@@ -18,9 +18,13 @@ app.use("/auth",authRoutes)
 app.use("/expense", expenseRoutes);
 
 
+const Expense=require("./models/Expense")
+const User = require("./models/User");
 
 
 
+
+Expense.belongsTo(User);
 sequilize.sync().then((res)=>{
 app.listen(5000, () => {
   console.log("port is running on 5000");

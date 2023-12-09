@@ -51,6 +51,8 @@ const login=async(req,res)=>{
 
         const {email,password}=req.body;
 
+        console.log(req.headers.Authorization)
+
         const user=await User.findOne({
             where:{
                 email:email

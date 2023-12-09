@@ -1,6 +1,9 @@
 import axios from "axios";
 
 
+
+
+
 export const signup = async (data) => {
   try {
     const response = await axios.post(
@@ -9,6 +12,7 @@ export const signup = async (data) => {
       {
         headers: {
           "Content-Type": "application/json",
+          "Authorization":localStorage.getItem("token")
         },
       }
     );
@@ -28,6 +32,7 @@ export const login = async (data) => {
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token"),
         },
       }
     );

@@ -8,6 +8,7 @@ export const addExpense = async (data) => {
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token"),
         },
       }
     );
@@ -21,7 +22,13 @@ export const addExpense = async (data) => {
 export const fetchExpenses = async () => {
   try {
     const response = await axios.get(
-      `${process.env.SERVER_URL}/expense/fetch-expenses`
+      `${process.env.SERVER_URL}/expense/fetch-expenses`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+      }
     );
 
     return response.data;
@@ -33,7 +40,13 @@ export const fetchExpenses = async () => {
 export const deleteExpense = async (id) => {
   try {
     const response = await axios.delete(
-      `${process.env.SERVER_URL}/expense/delete-expense/${id}`
+      `${process.env.SERVER_URL}/expense/delete-expense/${id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+      }
     );
 
     return response.data;
