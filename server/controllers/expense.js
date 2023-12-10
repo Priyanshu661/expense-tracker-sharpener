@@ -1,3 +1,4 @@
+
 const Expense = require("../models/Expense");
 
 const addExpense = async (req, res) => {
@@ -23,9 +24,9 @@ const addExpense = async (req, res) => {
 const fecth_expenses = async (req, res) => {
   try {
     const expenses = await Expense.findAll({
-      where:{
-        UserId:req.user.id
-      }
+      where: {
+        UserId: req.user.id,
+      },
     });
 
     return res.status(200).json({ data: expenses });
