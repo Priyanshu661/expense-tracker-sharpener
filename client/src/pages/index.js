@@ -1,13 +1,13 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+
 import styles from '@/styles/Home.module.css'
 import { useEffect, useState } from 'react'
 import Style from "./index.module.css"
 import { addExpense, deleteExpense, fetchExpenses } from '@/controllers/expense'
 import { useRouter } from 'next/router'
+import { purchase_premium,  } from '@/controllers/purchase'
+import { NextResponse } from 'next/server'
+import useRazorpay from "react-razorpay";
 
-const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
 
@@ -22,6 +22,8 @@ export default function Home() {
   const [run,setRun]=useState(false)
 
   const router=useRouter()
+
+  const [Razorpay] = useRazorpay();
 
 useEffect(()=>{
   if(!localStorage.getItem("token")){
@@ -66,7 +68,48 @@ addExpense(details).then((res)=>{
     })
   }
 
+  const handlePayment = () => {
+    purchase_premium()
+      .then((res) => {
+        console.log(res);
+        
 
+        const options = {
+          key_id: "rzp_test_ZJUohOTiT3FjhE",
+          order_id: res.order.id,
+          handler: async function (response) {
+            console.log("Razorpay response:", response);
+
+            try {
+              if (response.error.code) {
+                console.error("Razorpay payment error:", response.error);
+              } else {
+                if (response.razorpay_payment_id) {
+                  console.log("Payment successful!");
+                } else {
+                  console.log("Payment failed!");
+                }
+              }
+            } catch (error) {
+              console.error("Error processing Razorpay response:", error);
+            }
+          },
+        };
+
+        const rzp = new Razorpay(options);
+
+        console.log(rzp);
+
+        console.log("Before rzp.open()");
+
+        rzp.open();
+
+        console.log("After rzp.open()");
+      })
+      .catch((e) => {
+        console.error("Error initiating payment:", e);
+      });
+  };
 
   return (
     <>
@@ -111,6 +154,10 @@ addExpense(details).then((res)=>{
 
         <button className={Style.btn} onClick={handleAddExpense}>
           Add Expense
+        </button>
+
+        <button className={Style.btn} onClick={handlePayment}>
+          Buy Premium
         </button>
 
         {expenseData && expenseData?.length > 0 && (
