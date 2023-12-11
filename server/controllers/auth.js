@@ -69,10 +69,19 @@ const login=async(req,res)=>{
           return res.status(401).json({ message: "User not authorized" });
         }
 
-        const token = await jwt.sign({ userId: user.id }, "thisismysecretkey");
+        const token = await jwt.sign(
+          { userId: user.id, isPremium: user.isPremium },
+          "thisismysecretkey"
+        );
 
 
-        return res.status(200).json({message:"Login Successfull",token})
+        return res
+          .status(200)
+          .json({
+            message: "Login Successfull",
+            token,
+            isPremium: user.isPremium,
+          });
 
     }
     catch(e){

@@ -25,6 +25,9 @@ const User = sequilize.define("User", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  isPremium: {
+    type: Sequelize.BOOLEAN,
+  },
 });
 
 module.exports=User
