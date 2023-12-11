@@ -15,12 +15,10 @@ const expenseRoutes = require("./routes/expense");
 const purchaseRoutes = require("./routes/purchase");
 const premiumRoutes = require("./routes/premium");
 
-
 app.use("/auth", authRoutes);
 app.use("/expense", expenseRoutes);
 app.use("/order", purchaseRoutes);
 app.use("/premium", premiumRoutes);
-
 
 const Expense = require("./models/Expense");
 const User = require("./models/User");
@@ -33,7 +31,9 @@ User.hasMany(Order);
 Order.belongsTo(User);
 
 sequilize
+  // .sync({force:true})
   .sync()
+
   .then((res) => {
     app.listen(5000, () => {
       console.log("port is running on 5000");

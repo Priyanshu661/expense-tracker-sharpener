@@ -9,20 +9,26 @@ const fetch_leaderboard = async (req, res) => {
     //     group:["UserId"]
     // });
 
+    // const data = await User.findAll({
+    //   attributes: [
+    //     "id",
+    //     "name",
+    //     [sequilize.fn("sum", sequilize.col("amount")), "total_cost"],
+    //   ],
+    //   include: [
+    //     {
+    //       model: Expense,
+    //       attributes: [],
+    //     },
+    //   ],
+    //   group: ["user.id"],
+    //   order: [["total_cost", "DESC"]],
+    // });
+
     const data = await User.findAll({
-      attributes: [
-        "id",
-        "name",
-        [sequilize.fn("sum", sequilize.col("amount")), "total_cost"],
-      ],
-      include: [
-        {
-          model: Expense,
-          attributes: [],
-        },
-      ],
-      group: ["user.id"],
-      order: [["total_cost", "DESC"]],
+      attributes: ["id", "name", "totalExpenseAmount"],
+
+      order: [[ "totalExpenseAmount","DESC"]],
     });
 
     // const userIds = userData.map((item) => {

@@ -1,5 +1,5 @@
-
 const Expense = require("../models/Expense");
+const User = require("../models/User");
 
 const addExpense = async (req, res) => {
   try {
@@ -13,6 +13,22 @@ const addExpense = async (req, res) => {
     });
 
     await expense.save();
+
+    const user = await User.findOne({
+      where: {
+        id: req.user.id,
+      },
+    });
+
+    
+console.log(typeof user.totalExpenseAmount);
+    if (user.totalExpenseAmount) {
+    user.totalExpenseAmount += +amount;
+    } else {
+      user.totalExpenseAmount = amount;
+    }
+
+    await user.save();
 
     return res.status(200).json({ message: "Expense Added" });
   } catch (e) {
