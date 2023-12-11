@@ -1,11 +1,9 @@
-
 const Razorpay = require("razorpay");
 const Order = require("../models/Order");
 const User = require("../models/User");
 
 const purchase_premium = async (req, res) => {
   try {
-console.log(process.env.RAZORPAY_KEYID, process.env.RAZORPAY_KEYSECRET);
     const rzp = new Razorpay({
       key_id: process.env.RAZORPAY_KEYID,
       key_secret: process.env.RAZORPAY_KEYSECRET,
@@ -35,44 +33,44 @@ console.log(process.env.RAZORPAY_KEYID, process.env.RAZORPAY_KEYSECRET);
 };
 
 const update_order = async (req, res) => {
+  const t = await sequilize.transaction();
   try {
-   
-
-    const {razorpay_order_id,razorpay_payment_id}=req.body
-
+    const { razorpay_order_id, razorpay_payment_id } = req.body;
 
     await Order.update(
       {
         paymentid: razorpay_payment_id,
-        status:"Successfull",
+        status: "Successfull",
       },
       {
         where: {
           orderid: razorpay_order_id,
         },
+        transaction: t,
       }
     );
 
     await User.update(
       {
-        isPremium:true,
+        isPremium: true,
       },
       {
         where: {
           id: req.user.id,
         },
+        transaction: t,
       }
     );
-   
-return res.status(200).json({message:"order updated"})
-    
+    await t.commit();
+    return res.status(200).json({ message: "order updated" });
   } catch (e) {
     console.log(e);
+    await t.rollback();
     return res.status(400).json({ success: false, message: e });
   }
 };
 
 module.exports = {
   purchase_premium,
-  update_order
+  update_order,
 };

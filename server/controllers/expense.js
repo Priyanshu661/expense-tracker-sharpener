@@ -1,38 +1,49 @@
+const { Sequelize } = require("sequelize");
+const sequilize = require("../database/db");
 const Expense = require("../models/Expense");
 const User = require("../models/User");
 
 const addExpense = async (req, res) => {
+  const t = await sequilize.transaction();
   try {
     const { amount, description, category } = req.body;
 
-    const expense = new Expense({
-      amount,
-      description,
-      category,
-      UserId: req.user.id,
-    });
-
-    await expense.save();
-
-    const user = await User.findOne({
-      where: {
-        id: req.user.id,
+    await Expense.create(
+      {
+        amount,
+        description,
+        category,
+        UserId: req.user.id,
       },
-    });
+      {
+        transaction: t,
+      }
+    );
 
-    
-console.log(typeof user.totalExpenseAmount);
-    if (user.totalExpenseAmount) {
-    user.totalExpenseAmount += +amount;
+    let total_amount = 0;
+    if (req.user.totalExpenseAmount) {
+      total_amount = Number(req.user.totalExpenseAmount) + Number(amount);
     } else {
-      user.totalExpenseAmount = amount;
+      total_amount = Number(amount);
     }
 
-    await user.save();
+    await User.update(
+      {
+        totalExpenseAmount: total_amount,
+      },
+      {
+        where: {
+          id: req.user.id,
+        },
+        transaction: t,
+      }
+    );
 
+    await t.commit();
     return res.status(200).json({ message: "Expense Added" });
   } catch (e) {
     console.log(e);
+    await t.rollback();
     return res.status(400).json({ message: "Server Error" });
   }
 };
@@ -53,14 +64,22 @@ const fecth_expenses = async (req, res) => {
 };
 
 const delete_expense = async (req, res) => {
+  const t = await sequilize.transaction();
   try {
     const id = req.params.id;
+
+    const expense = await Expense.findOne({
+      where: {
+        id: id,
+      },
+    });
 
     const result = await Expense.destroy({
       where: {
         UserId: req.user.id,
         id: id,
       },
+      transaction: t,
     });
 
     if (!result) {
@@ -69,9 +88,29 @@ const delete_expense = async (req, res) => {
         .json({ message: "You are not allowed to delete this expense" });
     }
 
+    let total_amount = 0;
+
+    total_amount = Number(req.user.totalExpenseAmount) - Number(expense.amount);
+
+    await User.update(
+      {
+        totalExpenseAmount: total_amount,
+      },
+      {
+        where: {
+          id: req.user.id,
+        },
+        transaction: t,
+      }
+    );
+
+    await t.commit();
+
     return res.status(200).json({ message: "Expense Deleted" });
   } catch (e) {
     console.log(e);
+    await t.rollback();
+
     return res.status(400).json({ message: "Server Error" });
   }
 };
