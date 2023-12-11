@@ -49,7 +49,7 @@ const Leaderboard = ({leaderboardData}) => {
                 >
                   <span>{index + 1}</span>
                   <span>{item.name}</span>
-                  <span>{item.expense}</span>
+                  <span>{item.total_cost}</span>
                 </div>
               ))}
           </>

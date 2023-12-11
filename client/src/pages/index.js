@@ -109,24 +109,10 @@ export default function Home() {
 
   return (
     <div style={{ display: "flex", flexWrap: "wrap" }}>
-      <div
-        style={{
-          margin:0,
-          display: "flex",
-          flexDirection: "column",
-          gap: "50px",
-          width: "500px",
-         
-         textAlign:"center",
-          padding: "30px",
-          color:"white"
-        }}
-      >
-        <Leaderboard leaderboardData={leaderboardData} />
-      </div>
-
       <div className={Style.container}>
-        <button  className={Style.btn} onClick={fetchLeaderboard}>Fetch Leaderboard</button>
+        <button className={Style.btn} onClick={fetchLeaderboard}>
+          Fetch Leaderboard
+        </button>
         <h3>Daily Expense</h3>
         <label className={Style.label}>
           Amount:
@@ -230,6 +216,22 @@ export default function Home() {
             </>
           </div>
         )}
+      </div>
+
+      <div
+        style={{
+          margin: 0,
+          display: "flex",
+          flexDirection: "column",
+          gap: "50px",
+          width: "500px",
+
+          textAlign: "center",
+          padding: "30px",
+          color: "white",
+        }}
+      >
+        <Leaderboard leaderboardData={leaderboardData} />
       </div>
     </div>
   );
