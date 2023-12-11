@@ -28,7 +28,6 @@ const Login = () => {
 
       const handleSubmit = () => {
 
-        console.log(details)
         login(details).then((res) => {
           if (res?.error) {
             console.log(res)
@@ -37,6 +36,8 @@ const Login = () => {
 
             if(res.token){
               localStorage.setItem("token",res.token)
+              localStorage.setItem("isPremium", res.isPremium);
+
               router.replace("/")
             }
             console.log(res);
