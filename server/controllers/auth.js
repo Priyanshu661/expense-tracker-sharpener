@@ -3,6 +3,8 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
 const jwt = require("jsonwebtoken");
+const sequilize = require("../database/db");
+const { emailSender } = require("../miscellaneous/email_sender");
 
 const signup = async (req, res) => {
   const t = await sequilize.transaction();
@@ -45,7 +47,7 @@ const signup = async (req, res) => {
 };
 
 const login = async (req, res) => {
-     const t = await sequilize.transaction();
+  const t = await sequilize.transaction();
   try {
     const { email, password } = req.body;
 
@@ -81,14 +83,34 @@ const login = async (req, res) => {
     });
   } catch (e) {
     console.log(e);
-     await t.rollback();
+    await t.rollback();
     return res.status(400).json({ message: "Server Error" });
   }
 };
 
+const forgot_password = async (req, res) => {
+  const t = await sequilize.transaction();
+  try {
+    const { email } = req.body;
 
+    const msg = await emailSender(email);
+
+    console.log(msg);
+
+    await t.commit();
+
+    return res.status(200).json({
+      message: "Email Sent",
+    });
+  } catch (e) {
+    console.log(e);
+    await t.rollback();
+    return res.status(400).json({ message: "Server Error" });
+  }
+};
 
 module.exports = {
   signup,
   login,
+  forgot_password,
 };

@@ -85,9 +85,13 @@ const Login = () => {
           ></input>
         </label>
 
-        <div style={{display:"flex",gap:"20px"}}>
+        <div style={{ display: "flex", gap: "20px" }}>
           <button onClick={handleSubmit} className={Style.btn}>
             Login
+          </button>
+
+          <button onClick={() => router.push("/forgotPassword")} className={Style.btn}>
+            Forgot Password
           </button>
 
           <button onClick={() => router.push("/signup")} className={Style.btn}>

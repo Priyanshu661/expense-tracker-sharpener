@@ -1,6 +1,7 @@
 const Razorpay = require("razorpay");
 const Order = require("../models/Order");
 const User = require("../models/User");
+const sequilize = require("../database/db");
 
 const purchase_premium = async (req, res) => {
   try {
