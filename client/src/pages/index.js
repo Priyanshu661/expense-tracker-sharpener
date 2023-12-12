@@ -12,6 +12,8 @@ import { NextResponse } from "next/server";
 import useRazorpay from "react-razorpay";
 import { fecth_leaderboard } from "@/controllers/premium";
 import Leaderboard from "@/components/Leaderboard";
+import Expenses from "@/components/Expenses/DayExpenses";
+import AllExpenses from "@/components/Expenses/AllExpenses";
 
 export default function Home() {
   const [details, setDetails] = useState({
@@ -28,14 +30,16 @@ export default function Home() {
 
   const [Razorpay] = useRazorpay();
 
-  const [leaderboardData,setLeaderboardData]=useState([])
+  const [leaderboardData, setLeaderboardData] = useState([]);
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       router.replace("/login");
     }
 
-    setIsPremium(localStorage.getItem("isPremium"));
+    if (localStorage.getItem("isPremium")) {
+      setIsPremium(true);
+    }
   }, []);
 
   const handleChange = (e) => {
@@ -49,8 +53,7 @@ export default function Home() {
     });
   };
 
-  const [isPremium, setIsPremium] = useState();
-
+  const [isPremium, setIsPremium] = useState(false);
 
   const handleAddExpense = () => {
     addExpense(details).then((res) => {
@@ -76,7 +79,7 @@ export default function Home() {
     purchase_premium()
       .then((res) => {
         const options = {
-          key: "rzp_test_ZJUohOTiT3FjhE",
+          key: res.key_id,
           order_id: res.order.id,
           handler: async function (response) {
             update_order(response)
@@ -100,19 +103,21 @@ export default function Home() {
       });
   };
 
-  const fetchLeaderboard=async()=>{
-    fecth_leaderboard().then((res)=>{
-      setLeaderboardData(res.data)
-    }).catch((e)=>{
-      console.log(e)
-    })
-  }
+  const fetchLeaderboard = async () => {
+    fecth_leaderboard()
+      .then((res) => {
+        setLeaderboardData(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
-  console.log(isPremium)
+  console.log(isPremium);
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap" }}>
-      <div className={Style.container}>
+    <div >
+      {/* <div className={Style.container}>
         <button className={Style.btn} onClick={fetchLeaderboard}>
           Fetch Leaderboard
         </button>
@@ -235,7 +240,8 @@ export default function Home() {
         }}
       >
         <Leaderboard leaderboardData={leaderboardData} />
-      </div>
+      </div> */}
+      <AllExpenses />
     </div>
   );
 }

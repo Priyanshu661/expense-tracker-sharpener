@@ -1,0 +1,79 @@
+.container{
+    height:100%;
+align-items: center;
+width: 100%;
+   
+
+}
+
+.tableRow{
+    
+}
+
+.tableHeaders{
+    display: grid;
+    color: white;
+    grid-template-columns:1fr 1fr 1fr 1fr 1fr ;
+    background-color:rgb(157, 153, 163);
+}
+
+.monthlytableHeaders {
+    display: grid;
+    color: white;
+    grid-template-columns: 1fr 1fr 1fr ;
+    background-color: rgb(157, 153, 163);
+}
+.monthlytableDataEven {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr ;
+    background-color: aliceblue;
+
+
+
+
+}
+
+.monthlytableDataOdd {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    background-color: bisque;
+
+
+}
+
+.tableDataEven {
+    display: grid;
+grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    background-color: aliceblue;
+   
+    
+
+
+}
+
+.tableDataOdd {
+    display: grid;
+grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    background-color:bisque;
+
+
+}
+
+.headerStyle{
+    text-align: left;
+    border:1px solid black;
+    padding: 5px;
+    word-break: break-word;
+    
+   
+    
+}
+
+.evenRowStyle{
+    background-color:aliceblue;
+}
+
+.oddRowStyle {
+    background-color:antiquewhite;
+}
+

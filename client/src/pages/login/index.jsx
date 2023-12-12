@@ -1,51 +1,46 @@
-import { useRouter } from 'next/router';
-import React, { useState } from 'react'
+import { useRouter } from "next/router";
+import React, { useState } from "react";
 import Style from "./index.module.css";
-import { login } from '@/controllers/auth';
-
+import { login } from "@/controllers/auth";
 
 const Login = () => {
+  const [details, setDetails] = useState({
+    email: "",
+    password: "",
+  });
 
-      const [details, setDetails] = useState({
-       
-        email: "",
-        password: "",
-      
-      });
+  const router = useRouter();
 
-      const router=useRouter()
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-
-        setDetails((prev) => {
-          return {
-            ...prev,
-            [name]: value,
-          };
-        });
+    setDetails((prev) => {
+      return {
+        ...prev,
+        [name]: value,
       };
+    });
+  };
 
-      const handleSubmit = () => {
+  const handleSubmit = () => {
+    login(details).then((res) => {
+      if (res?.error) {
+        console.log(res);
+        // console.log(res?.message);
+      } else {
+        if (res.token) {
+          localStorage.setItem("token", res.token);
 
-        login(details).then((res) => {
-          if (res?.error) {
-            console.log(res)
-            // console.log(res?.message);
-          } else {
-
-            if(res.token){
-              localStorage.setItem("token",res.token)
-              localStorage.setItem("isPremium", res.isPremium?true:false);
-
-              router.replace("/")
-            }
-            console.log(res);
+          if (res.isPremium) {
+            localStorage.setItem("isPremium", res.isPremium ? true : false);
           }
-        });
-      };
 
-      
+          router.replace("/");
+        }
+        console.log(res);
+      }
+    });
+  };
 
   return (
     <div>
@@ -90,7 +85,10 @@ const Login = () => {
             Login
           </button>
 
-          <button onClick={() => router.push("/forgotPassword")} className={Style.btn}>
+          <button
+            onClick={() => router.push("/forgotPassword")}
+            className={Style.btn}
+          >
             Forgot Password
           </button>
 
@@ -101,6 +99,6 @@ const Login = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Login
+export default Login;
