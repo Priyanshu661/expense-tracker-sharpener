@@ -6,6 +6,9 @@ const jwt = require("jsonwebtoken");
 const sequilize = require("../database/db");
 const { emailSender } = require("../miscellaneous/email_sender");
 
+const { v4: uuidv4 } = require("uuid");
+const ForgotPassword = require("../models/ForgotPassword");
+
 const signup = async (req, res) => {
   const t = await sequilize.transaction();
   try {
@@ -93,7 +96,37 @@ const forgot_password = async (req, res) => {
   try {
     const { email } = req.body;
 
-    const msg = await emailSender(email);
+    const subject = "Reset Password link";
+
+    const id = uuidv4();
+
+    const user = await User.findOne({
+      where: {
+        email: email,
+      },
+      transaction: t,
+    });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No User Found with this mail id" });
+    }
+
+    await ForgotPassword.create(
+      {
+        id: id,
+        isActive: true,
+        UserId: user.id,
+      },
+      {
+        transaction: t,
+      }
+    );
+
+    const content = `${process.env.CLIENT_URL}/resetPassword/${id}`;
+
+    const msg = await emailSender(email, subject, content);
 
     console.log(msg);
 
@@ -109,8 +142,57 @@ const forgot_password = async (req, res) => {
   }
 };
 
+const reset_password = async (req, res) => {
+  const t = await sequilize.transaction();
+  try {
+    const { id, password } = req.body;
+
+    const forgotpassword = await ForgotPassword.findOne({
+      where: {
+        id: id,
+      },
+      transaction: t,
+    });
+
+    if (!forgotpassword.isActive) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Your link is expired, try again" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.update(
+      {
+        password: hashedPassword,
+      },
+      {
+        where: {
+          id: forgotpassword.UserId,
+        },
+        transaction: t,
+      }
+    );
+
+    forgotpassword.isActive = false;
+
+    await forgotpassword.save();
+
+    await t.commit();
+
+    return res.status(200).json({
+      message: "Password  updated",
+    });
+  } catch (e) {
+    console.log(e);
+    await t.rollback();
+    return res.status(400).json({ message: "Server Error" });
+  }
+};
+
 module.exports = {
   signup,
   login,
   forgot_password,
+  reset_password
 };

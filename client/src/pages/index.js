@@ -51,6 +51,7 @@ export default function Home() {
 
   const [isPremium, setIsPremium] = useState();
 
+
   const handleAddExpense = () => {
     addExpense(details).then((res) => {
       setRun(!run);
@@ -107,6 +108,8 @@ export default function Home() {
     })
   }
 
+  console.log(isPremium)
+
   return (
     <div style={{ display: "flex", flexWrap: "wrap" }}>
       <div className={Style.container}>
@@ -155,12 +158,12 @@ export default function Home() {
           Add Expense
         </button>
 
-        {!isPremium ? (
+        {isPremium ? (
+          "You are premium User"
+        ) : (
           <button className={Style.btn} onClick={handlePayment}>
             Buy Premium
           </button>
-        ) : (
-          "You are premium User"
         )}
         {expenseData && expenseData?.length > 0 && (
           <div

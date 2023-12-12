@@ -36,7 +36,7 @@ const Login = () => {
 
             if(res.token){
               localStorage.setItem("token",res.token)
-              localStorage.setItem("isPremium", res.isPremium);
+              localStorage.setItem("isPremium", res.isPremium?true:false);
 
               router.replace("/")
             }

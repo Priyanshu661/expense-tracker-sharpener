@@ -23,12 +23,16 @@ app.use("/premium", premiumRoutes);
 const Expense = require("./models/Expense");
 const User = require("./models/User");
 const Order = require("./models/Order");
+const ForgotPassword = require("./models/ForgotPassword");
+
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
 
 User.hasMany(Order);
 Order.belongsTo(User);
+
+User.hasMany(ForgotPassword)
 
 sequilize
   // .sync({force:true})
