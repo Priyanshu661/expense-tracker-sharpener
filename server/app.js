@@ -24,6 +24,8 @@ const Expense = require("./models/Expense");
 const User = require("./models/User");
 const Order = require("./models/Order");
 const ForgotPassword = require("./models/ForgotPassword");
+const ExpenseURL = require("./models/ExpenseURL")
+
 
 
 User.hasMany(Expense);
@@ -34,8 +36,11 @@ Order.belongsTo(User);
 
 User.hasMany(ForgotPassword)
 
+User.hasMany(ExpenseURL);
+
+
 sequilize
-  // .sync({force:true})
+  // .sync({ force: true })
   .sync()
 
   .then((res) => {

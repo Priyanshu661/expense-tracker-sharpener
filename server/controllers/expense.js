@@ -2,6 +2,7 @@ const { Sequelize } = require("sequelize");
 const sequilize = require("../database/db");
 const Expense = require("../models/Expense");
 const User = require("../models/User");
+const upload_to_s3 = require("../miscellaneous/aws_sdk");
 
 const addExpense = async (req, res) => {
   const t = await sequilize.transaction();
@@ -115,8 +116,31 @@ const delete_expense = async (req, res) => {
   }
 };
 
+const download_expenses = async (req, res) => {
+  try {
+    const expenses = await req.user.getExpenses();
+
+    const stringifiedData = JSON.stringify(expenses);
+
+    const userId = req.user.id;
+    const filename = `Expenses/${userId}/${new Date()}`;
+
+    const fileUrl = await upload_to_s3(filename, stringifiedData);
+
+    await req.user.createExpenseURL({
+      expense_url: fileUrl?.Location,
+    });
+
+    return res.status(200).json({ data: fileUrl });
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ message: "Server Error" });
+  }
+};
+
 module.exports = {
   addExpense,
   fecth_expenses,
   delete_expense,
+  download_expenses,
 };
