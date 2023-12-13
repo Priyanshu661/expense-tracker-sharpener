@@ -54,3 +54,23 @@ export const deleteExpense = async (id) => {
     return e.response.data;
   }
 };
+
+
+
+export const downloadExpenses = async () => {
+  try {
+    const response = await axios.get(
+      `${process.env.SERVER_URL}/expense/download-expenses`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+
+    return response.data;
+  } catch (e) {
+    return e.response.data;
+  }
+};

@@ -4,6 +4,7 @@ import Style from "./index.module.css";
 import {
   addExpense,
   deleteExpense,
+  downloadExpenses,
   fetchExpenses,
 } from "@/controllers/expense";
 import { useRouter } from "next/router";
@@ -113,11 +114,23 @@ export default function Home() {
       });
   };
 
-  console.log(isPremium);
+  const download=async()=>{
+    downloadExpenses().then((res)=>{
+      if (res?.data?.Location) {
+        window.open(res?.data?.Location);
+      } else {
+        console.log(res);
+      }
+    })
+  }
+
 
   return (
-    <div >
-      {/* <div className={Style.container}>
+    <div>
+      <div className={Style.container}>
+       {isPremium && <button className={Style.btn} onClick={download}>
+          Download Expenses
+        </button>}
         <button className={Style.btn} onClick={fetchLeaderboard}>
           Fetch Leaderboard
         </button>
@@ -240,7 +253,7 @@ export default function Home() {
         }}
       >
         <Leaderboard leaderboardData={leaderboardData} />
-      </div> */}
+      </div>
       <AllExpenses />
     </div>
   );
