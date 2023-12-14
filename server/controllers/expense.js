@@ -56,7 +56,7 @@ const fecth_expenses = async (req, res) => {
 
 
 
-    const limit=5
+    const limit = parseInt(req.query.limit);
 
     const skip = limit * (page - 1);
 

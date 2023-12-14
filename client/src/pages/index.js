@@ -33,6 +33,12 @@ export default function Home() {
 
   const [leaderboardData, setLeaderboardData] = useState([]);
 
+
+  const [itemsPerPage,setItemsPerPage]=useState(5)
+  useEffect(()=>{
+    setItemsPerPage(localStorage.getItem("limit"))
+  },[])
+
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       router.replace("/login");
@@ -42,6 +48,8 @@ export default function Home() {
       setIsPremium(true);
     }
   }, []);
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -78,7 +86,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchExpenses(currentPage)
+    fetchExpenses(currentPage,itemsPerPage)
       .then((res) => {
         if (res?.data) {
           setExpenseData(res.data);
@@ -88,7 +96,7 @@ export default function Home() {
         }
       })
       .catch((e) => console.log(e));
-  }, [run,currentPage]);
+  }, [run,currentPage,itemsPerPage]);
 
   const handleDeleteExpense = (id) => {
     deleteExpense(id).then((res) => {
@@ -244,6 +252,25 @@ export default function Home() {
               padding: "20px",
             }}
           >
+            <div>
+            <label>Items Per Page</label>
+              <select 
+              value={itemsPerPage}
+              onChange={(e)=>{
+                
+                setItemsPerPage(e.target.value)
+                localStorage.setItem("limit", e.target.value);
+                
+                }}
+              >
+                {[5, 8, 10].map((item, index) =>(
+                  <option key={index} value={item}>
+                    {" "}
+                    {item}
+                  </option>
+               ))}
+              </select>
+            </div>
             <h3 style={{ textAlign: "center" }}>Expenses</h3>
             <>
               <div
@@ -316,7 +343,7 @@ export default function Home() {
                 >
                   {currentPage}
                 </button>
-                {currentPage < Math.ceil(expenseCount / 5) && (
+                {currentPage < Math.ceil(expenseCount / itemsPerPage) && (
                   <button
                     style={{ height: "30px" }}
                     onClick={() => {
