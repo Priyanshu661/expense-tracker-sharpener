@@ -51,13 +51,35 @@ const addExpense = async (req, res) => {
 
 const fecth_expenses = async (req, res) => {
   try {
-    const expenses = await Expense.findAll({
-      where: {
-        UserId: req.user.id,
-      },
+
+    const page=req.query.page;
+
+
+
+    const limit=5
+
+    const skip = limit * (page - 1);
+
+
+    const expensesCount=await Expense.count({
+      where:{
+        UserId:req.user.id
+      }
+    })
+
+    const expenses = await req.user.getExpenses({
+      limit: limit,
+      offset: skip,
     });
 
-    return res.status(200).json({ data: expenses });
+
+    // const expenses = await Expense.findAll({
+    //   where: {
+    //     UserId: req.user.id,
+    //   },
+    // });
+
+    return res.status(200).json({ data: expenses,expensesCount });
   } catch (e) {
     console.log(e);
     return res.status(400).json({ message: "Server Error" });
