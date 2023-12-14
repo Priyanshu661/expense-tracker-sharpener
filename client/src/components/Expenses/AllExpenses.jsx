@@ -4,7 +4,7 @@ import MonthlyExpenses from './MonthlyExpenses'
 
 const AllExpenses = () => {
   return (
-    <div style={{marginBottom: "100px",height: "100%",margin:0}}>
+    <div style={{marginBottom: "100px",height: "100%",margin:0,color:"black"}}>
       <div >
         <Expenses />
       </div>

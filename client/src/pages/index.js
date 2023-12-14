@@ -55,20 +55,40 @@ export default function Home() {
   };
 
   const [isPremium, setIsPremium] = useState(false);
+  const [expenseForm, setExpenseForm] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [previousPage, setPreviousPage] = useState(currentPage - 1);
+
+  const [nextPage, setNextPage] = useState(currentPage + 1);
+
+  const [expenseCount, setExpenseCount] = useState(0);
 
   const handleAddExpense = () => {
     addExpense(details).then((res) => {
       setRun(!run);
+      setExpenseForm(false);
+      setDetails({
+        amount: null,
+        description: "",
+        category: "",
+      });
     });
   };
 
   useEffect(() => {
-    fetchExpenses().then((res) => {
-      if (res?.data) {
-        setExpenseData(res.data);
-      }
-    });
-  }, [run]);
+    fetchExpenses(currentPage)
+      .then((res) => {
+        if (res?.data) {
+          setExpenseData(res.data);
+          setExpenseCount(res?.expensesCount);
+        } else {
+          console.log(res);
+        }
+      })
+      .catch((e) => console.log(e));
+  }, [run,currentPage]);
 
   const handleDeleteExpense = (id) => {
     deleteExpense(id).then((res) => {
@@ -114,75 +134,106 @@ export default function Home() {
       });
   };
 
-  const download=async()=>{
-    downloadExpenses().then((res)=>{
+  const download = async () => {
+    downloadExpenses().then((res) => {
       if (res?.data?.Location) {
         window.open(res?.data?.Location);
       } else {
         console.log(res);
       }
-    })
-  }
+    });
+  };
+
 
 
   return (
     <div>
       <div className={Style.container}>
-       {isPremium && <button className={Style.btn} onClick={download}>
-          Download Expenses
-        </button>}
-        <button className={Style.btn} onClick={fetchLeaderboard}>
-          Fetch Leaderboard
-        </button>
-        <h3>Daily Expense</h3>
-        <label className={Style.label}>
-          Amount:
-          <input
-            type="number"
-            name="amount"
-            value={details.amount}
-            onChange={handleChange}
-            className={Style.input}
-          ></input>
-        </label>
-
-        <label className={Style.label}>
-          Description
-          <input
-            type="text"
-            name="description"
-            value={details.description}
-            onChange={handleChange}
-            className={Style.input}
-          ></input>
-        </label>
-
-        <label className={Style.label}>
-          Category:
-          <select
-            name="category"
-            value={details.category}
-            onChange={handleChange}
-            className={Style.input}
-          >
-            <option value="">Select Category</option>
-            {["Food", "Petrol", "Crcicket"].map((item, index) => (
-              <option value={item}>{item}</option>
-            ))}
-          </select>
-        </label>
-
-        <button className={Style.btn} onClick={handleAddExpense}>
-          Add Expense
-        </button>
-
-        {isPremium ? (
-          "You are premium User"
-        ) : (
-          <button className={Style.btn} onClick={handlePayment}>
-            Buy Premium
+        <div style={{ display: "flex", gap: "50px" }}>
+          {" "}
+          {isPremium && (
+            <button className={Style.btn} onClick={download}>
+              Download Expenses
+            </button>
+          )}
+          {isPremium ? (
+            "You are premium User"
+          ) : (
+            <button className={Style.btn} onClick={handlePayment}>
+              Buy Premium
+            </button>
+          )}
+          <button className={Style.btn} onClick={fetchLeaderboard}>
+            Fetch Leaderboard
           </button>
+          {!expenseForm && (
+            <button className={Style.btn} onClick={() => setExpenseForm(true)}>
+              Add Expense
+            </button>
+          )}
+        </div>
+
+        <div
+          style={{
+            margin: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: "50px",
+            maxWidth: "500px",
+
+            textAlign: "center",
+            padding: "30px",
+            color: "white",
+          }}
+        >
+          <Leaderboard leaderboardData={leaderboardData} />
+        </div>
+        <h3>Daily Expense</h3>
+        {expenseForm && (
+          <>
+            <label className={Style.label}>
+              Amount:
+              <input
+                type="number"
+                name="amount"
+                value={details.amount}
+                onChange={handleChange}
+                className={Style.input}
+              ></input>
+            </label>
+
+            <label className={Style.label}>
+              Description
+              <input
+                type="text"
+                name="description"
+                value={details.description}
+                onChange={handleChange}
+                className={Style.input}
+              ></input>
+            </label>
+
+            <label className={Style.label}>
+              Category:
+              <select
+                name="category"
+                value={details.category}
+                onChange={handleChange}
+                className={Style.input}
+              >
+                <option value="">Select Category</option>
+                {["Food", "Petrol", "Crcicket"].map((item, index) => (
+                  <option value={item}>{item}</option>
+                ))}
+              </select>
+            </label>
+
+            <button className={Style.btn} onClick={handleAddExpense}>
+              Add Expense
+            </button>
+          </>
         )}
+
         {expenseData && expenseData?.length > 0 && (
           <div
             style={{
@@ -212,7 +263,7 @@ export default function Home() {
               </div>
               {expenseData?.map((item, index) => (
                 <div
-                  key={index}
+                  key={item.id}
                   style={{
                     display: "grid",
 
@@ -234,27 +285,57 @@ export default function Home() {
                   </span>
                 </div>
               ))}
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "3px",
+                }}
+              >
+                {currentPage !== 1 && (
+                  <button
+                    style={{ height: "30px" }}
+                    onClick={() => {
+                      setCurrentPage(previousPage);
+                      setNextPage(nextPage - 1);
+
+                      setPreviousPage(previousPage - 1);
+                    }}
+                  >
+                    {previousPage}
+                  </button>
+                )}
+                <button
+                  style={{
+                    height: "40px",
+                    width: "50px",
+                    backgroundColor: "blue",
+                    color: "white",
+                  }}
+                >
+                  {currentPage}
+                </button>
+                {currentPage < Math.ceil(expenseCount / 5) && (
+                  <button
+                    style={{ height: "30px" }}
+                    onClick={() => {
+                      setPreviousPage(currentPage);
+                      setCurrentPage(nextPage);
+                      setNextPage(nextPage + 1);
+                    }}
+                  >
+                    {nextPage}
+                  </button>
+                )}
+              </div>
             </>
           </div>
         )}
-      </div>
 
-      <div
-        style={{
-          margin: 0,
-          display: "flex",
-          flexDirection: "column",
-          gap: "50px",
-          width: "500px",
-
-          textAlign: "center",
-          padding: "30px",
-          color: "white",
-        }}
-      >
-        <Leaderboard leaderboardData={leaderboardData} />
+        <AllExpenses />
       </div>
-      <AllExpenses />
     </div>
   );
 }
+// expenseCount / 5;

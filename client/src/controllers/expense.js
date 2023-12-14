@@ -19,10 +19,10 @@ export const addExpense = async (data) => {
   }
 };
 
-export const fetchExpenses = async () => {
+export const fetchExpenses = async (page) => {
   try {
     const response = await axios.get(
-      `${process.env.SERVER_URL}/expense/fetch-expenses`,
+      `${process.env.SERVER_URL}/expense/fetch-expenses?page=${page}`,
       {
         headers: {
           "Content-Type": "application/json",
