@@ -4,11 +4,37 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const sequilize = require("./database/db");
+
+const helmet=require("helmet")
+const morgan = require("morgan");
+const fs=require("fs")
+const path = require("path");
+
+// const compression=require("compression")
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(helmet())
+// app.use(compression());
+
+
+
+const accessLogStream=fs.createWriteStream(
+  path.join(__dirname,"access.log"),
+  {flags:"a"}
+)
+
+morgan("combined", {
+  skip: function (req, res) {
+    return res.statusCode < 400;
+  },
+},{ stream: accessLogStream });
+app.use(morgan("combined", { stream: accessLogStream }));
+
+
+
 
 const authRoutes = require("./routes/auth");
 const expenseRoutes = require("./routes/expense");
@@ -24,7 +50,7 @@ const Expense = require("./models/Expense");
 const User = require("./models/User");
 const Order = require("./models/Order");
 const ForgotPassword = require("./models/ForgotPassword");
-const ExpenseURL = require("./models/ExpenseURL")
+const ExpenseURL = require("./models/ExpenseURL");
 
 
 
