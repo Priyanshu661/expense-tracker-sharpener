@@ -2,23 +2,45 @@ import React from "react";
 
 import Style from "./Expenses.module.css";
 
-const MonthlyExpenses = ({label}) => {
+const MonthlyExpenses = ({
+  label,
+
+  monthlyExpenseAMount,
+}) => {
+
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   return (
-    <div className={Style.container}>
+    <div className={Style.container} >
       <h3 style={{ textAlign: "Center" }}>{label}</h3>
       <div className={Style.monthlytableHeaders}>
-        <span className={Style.headerStyle}>Income</span>
+        <span className={Style.headerStyle}>Month</span>
         <span className={Style.headerStyle}>Expense</span>
-        <span className={Style.headerStyle}>Savings</span>
+        {/* <span className={Style.headerStyle}>Savings</span> */}
       </div>
 
       <div className={Style.monthlytableDataOdd}>
-        <span className={Style.headerStyle}>Date</span>
-        <span className={Style.headerStyle}>Description</span>
-        <span className={Style.headerStyle}>Category</span>
+        <span className={Style.headerStyle}>{monthNames[new Date().getMonth()]}</span>
+        <span className={Style.headerStyle}>
+          {monthlyExpenseAMount?.length > 0 &&
+            monthlyExpenseAMount[0]?.total_expense}
+        </span>
+        {/* <span className={Style.headerStyle}>Category</span> */}
       </div>
 
-      <div className={Style.monthlytableDataOdd}>
+      {/* <div className={Style.monthlytableDataOdd}>
         <span className={Style.headerStyle}>Date</span>
         <span className={Style.headerStyle}>
           Descggdfgjiwsasasasdssdsdsasasasasasagigdijgdifgiodjfgodijgdgogdogdigfiption
@@ -32,7 +54,7 @@ const MonthlyExpenses = ({label}) => {
           Descggdfgjigigdijgdifgiodjfgodijgdgogdogdigfiption
         </span>
         <span className={Style.headerStyle}>Category</span>
-      </div>
+      </div> */}
     </div>
   );
 };

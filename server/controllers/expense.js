@@ -1,4 +1,4 @@
-const { Sequelize } = require("sequelize");
+const  Sequelize  = require("sequelize");
 const sequilize = require("../database/db");
 const Expense = require("../models/Expense");
 const User = require("../models/User");
@@ -67,6 +67,39 @@ const fecth_expenses = async (req, res) => {
       }
     })
 
+    const lastYear=new Date();
+    const lastMonth=new Date()
+
+    lastYear.setFullYear(lastYear.getFullYear()-1)
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+
+
+    console.log(lastMonth,lastYear)
+
+    const yearlyExpenseAmount = await req.user.getExpenses({
+      where: {
+        createdAt: {
+          [Sequelize.Op.gte]: lastYear,
+        },
+      },
+      attributes: [
+        [sequilize.fn("sum", sequilize.col("amount")), "total_expense"],
+      ],
+    });
+
+
+      const monthlyExpenseAmount = await req.user.getExpenses({
+        where: {
+          createdAt: {
+            [Sequelize.Op.gte]: lastMonth,
+          },
+        },
+        attributes:[[sequilize.fn("sum",sequilize.col("amount")),"total_expense"]]
+      });
+
+
+   
+
     const expenses = await req.user.getExpenses({
       limit: limit,
       offset: skip,
@@ -79,7 +112,7 @@ const fecth_expenses = async (req, res) => {
     //   },
     // });
 
-    return res.status(200).json({ data: expenses,expensesCount });
+    return res.status(200).json({ data: expenses,expensesCount,monthlyExpenseAmount,yearlyExpenseAmount });
   } catch (e) {
     console.log(e);
     return res.status(400).json({ message: "Server Error" });

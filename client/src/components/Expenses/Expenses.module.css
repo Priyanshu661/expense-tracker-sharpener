@@ -2,6 +2,8 @@
     height:100%;
 align-items: center;
 width: 100%;
+
+min-width: 300px;
    
 
 }
@@ -20,12 +22,12 @@ width: 100%;
 .monthlytableHeaders {
     display: grid;
     color: white;
-    grid-template-columns: 1fr 1fr 1fr ;
+    grid-template-columns: 1fr 1fr;
     background-color: rgb(157, 153, 163);
 }
 .monthlytableDataEven {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr ;
+    grid-template-columns: 1fr 1fr ;
     background-color: aliceblue;
 
 
@@ -35,7 +37,7 @@ width: 100%;
 
 .monthlytableDataOdd {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     background-color: bisque;
 
 

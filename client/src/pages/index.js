@@ -73,6 +73,10 @@ export default function Home() {
 
   const [expenseCount, setExpenseCount] = useState(0);
 
+  const [monthlyExpenseAMount,setMonthlyExpenseAmount]=useState([])
+  const [yearlyExpenseAMount, setYearlyExpenseAmount] = useState([]);
+
+
   const handleAddExpense = () => {
     addExpense(details).then((res) => {
       setRun(!run);
@@ -90,6 +94,9 @@ export default function Home() {
       .then((res) => {
         if (res?.data) {
           setExpenseData(res.data);
+          setMonthlyExpenseAmount(res?.monthlyExpenseAmount)
+          setYearlyExpenseAmount(res?.yearlyExpenseAmount);
+
           setExpenseCount(res?.expensesCount);
         } else {
           console.log(res);
@@ -157,7 +164,7 @@ export default function Home() {
   return (
     <div>
       <div className={Style.container}>
-        <div style={{ display: "flex", gap: "50px" }}>
+        <div style={{ display: "flex", gap: "20px" }}>
           {" "}
           {isPremium && (
             <button className={Style.btn} onClick={download}>
@@ -360,7 +367,7 @@ export default function Home() {
           </div>
         )}
 
-        <AllExpenses />
+        <AllExpenses monthlyExpenseAMount={monthlyExpenseAMount} yearlyExpenseAMount={yearlyExpenseAMount} />
       </div>
     </div>
   );

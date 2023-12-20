@@ -70,7 +70,7 @@ sequilize
   .sync()
 
   .then((res) => {
-    app.listen(5000, () => {
+    app.listen(process.env.PORT, () => {
       console.log("port is running on 5000");
     });
     console.log("db connected");
